@@ -1,7 +1,0 @@
----
-name: FormLib
-author: matcracker
-api: 3.2.0
-version: 1.0.1
-antigen: matcracker\FormLib
-...
