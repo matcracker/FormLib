@@ -35,8 +35,8 @@ class CustomForm extends BaseForm{
 	public const STEP_SLIDER = "step_slider";
 	public const TOGGLE = "toggle";
 
-	public function __construct(Closure $closure){
-		parent::__construct($closure);
+	public function __construct(Closure $onSubmit){
+		parent::__construct($onSubmit);
 		$this->setType(self::CUSTOM_FORM_TYPE);
 		$this->data["content"] = [];
 	}
@@ -48,10 +48,10 @@ class CustomForm extends BaseForm{
 		]);
 	}
 
-	public final function addInput(string $text, string $placeHolder = "", ?string $default = null) : self{
+	public final function addInput(string $text, string $placeHolder = "", ?string $defaultText = null) : self{
 		return $this->addContent(self::INPUT, $text, [
 			"placeholder" => $placeHolder,
-			"default" => $default
+			"default" => $defaultText
 		]);
 	}
 
@@ -59,19 +59,19 @@ class CustomForm extends BaseForm{
 		return $this->addContent(self::LABEL, $text, []);
 	}
 
-	public final function addSlider(string $text, int $min, int $max, ?int $step = null, ?int $default = null) : self{
+	public final function addSlider(string $text, int $min, int $max, ?int $step = null, ?int $defaultStep = null) : self{
 		return $this->addContent(self::SLIDER, $text, [
 			"min" => $min,
 			"max" => $max,
 			"step" => $step,
-			"default" => $default
+			"default" => $defaultStep
 		]);
 	}
 
-	public final function addStepSlider(string $text, array $steps, ?int $default = null) : self{
+	public final function addStepSlider(string $text, array $steps, ?int $defaultStep = null) : self{
 		return $this->addContent(self::STEP_SLIDER, $text, [
 			"steps" => $steps,
-			"default" => $default
+			"default" => $defaultStep
 		]);
 	}
 
@@ -87,7 +87,9 @@ class CustomForm extends BaseForm{
 				"type" => $type,
 				"text" => $text
 			],
-			array_filter($contentData) //Remove null fields
+			array_filter($contentData, static function($value) : bool{//Remove null fields
+				return $value !== null;
+			})
 		);
 
 		return $this;

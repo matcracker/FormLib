@@ -31,12 +31,19 @@ class Form extends BaseForm{
 	public const IMAGE_TYPE_PATH = 0;
 	public const IMAGE_TYPE_URL = 1;
 
-	public function __construct(Closure $closure){
-		parent::__construct($closure);
+	public function __construct(Closure $onSubmit){
+		parent::__construct($onSubmit);
 		$this->setType(self::FORM_TYPE);
 		$this->setMessage("");
 	}
 
+	/**
+	 * Sets the message before all the buttons
+	 *
+	 * @param string $message
+	 *
+	 * @return Form
+	 */
 	public final function setMessage(string $message) : self{
 		$this->data["content"] = $message;
 
@@ -59,14 +66,37 @@ class Form extends BaseForm{
 		return $this;
 	}
 
+	/**
+	 * Adds a button without images
+	 *
+	 * @param string $text
+	 *
+	 * @return Form
+	 */
 	public final function addClassicButton(string $text) : self{
 		return $this->addButton($text);
 	}
 
+	/**
+	 * Adds a button with an image taken from the web
+	 *
+	 * @param string $text
+	 * @param string $url
+	 *
+	 * @return Form
+	 */
 	public final function addWebImageButton(string $text, string $url) : self{
 		return $this->addButton($text, self::IMAGE_TYPE_URL, $url);
 	}
 
+	/**
+	 * Adds a button with a local Minecraft image.
+	 *
+	 * @param string $text
+	 * @param string $imagePath
+	 *
+	 * @return Form
+	 */
 	public final function addLocalImageButton(string $text, string $imagePath) : self{
 		return $this->addButton($text, self::IMAGE_TYPE_PATH, $imagePath);
 	}

@@ -29,8 +29,8 @@ use InvalidArgumentException;
 
 class ModalForm extends BaseForm{
 
-	public function __construct(Closure $closure){
-		parent::__construct($closure);
+	public function __construct(Closure $onSubmit){
+		parent::__construct($onSubmit);
 		$this->setType(self::MODAL_FORM_TYPE);
 		$this->setButton(1, "")
 			->setButton(2, "")

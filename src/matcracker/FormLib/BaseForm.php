@@ -35,24 +35,44 @@ abstract class BaseForm implements Form{
 	public const MODAL_FORM_TYPE = "modal";
 	public const CUSTOM_FORM_TYPE = "custom_form";
 
-	private $closure;
+	/**@var Closure $onSubmit */
+	private $onSubmit;
+	/**@var array $data */
 	protected $data;
 
-	public function __construct(Closure $closure){
+	/**
+	 * BaseForm constructor.
+	 *
+	 * @param Closure $onSubmit Called when the form is submitted.
+	 */
+	public function __construct(Closure $onSubmit){
 		Utils::validateCallableSignature(function(Player $player, $data){
-		}, $closure);
-		$this->closure = $closure;
+		}, $onSubmit);
+		$this->onSubmit = $onSubmit;
 		$this->setTitle("");
 	}
 
+	/**
+	 * @param Player $player
+	 * @param mixed  $data
+	 *
+	 * @internal
+	 */
 	public function handleResponse(Player $player, $data) : void{
-		($this->closure)($player, $data);
+		($this->onSubmit)($player, $data);
 	}
 
 	public final function jsonSerialize(){
 		return $this->data;
 	}
 
+	/**
+	 * It sets the title form.
+	 *
+	 * @param string $title
+	 *
+	 * @return BaseForm
+	 */
 	public final function setTitle(string $title) : self{
 		$this->data["title"] = $title;
 
@@ -63,6 +83,13 @@ abstract class BaseForm implements Form{
 		return $this->data["title"];
 	}
 
+	/**
+	 * Sets the form type. @param string $type
+	 *
+	 * @return BaseForm
+	 * @see BaseForm constants.
+	 *
+	 */
 	protected final function setType(string $type) : self{
 		$this->data["type"] = $type;
 
