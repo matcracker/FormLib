@@ -39,7 +39,7 @@ abstract class BaseForm implements Form{
 	protected $data;
 
 	public function __construct(Closure $closure){
-		Utils::validateCallableSignature(function(Player $player, $data) : void{
+		Utils::validateCallableSignature(function(Player $player, $data){
 		}, $closure);
 		$this->closure = $closure;
 		$this->setTitle("");
