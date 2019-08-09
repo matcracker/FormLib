@@ -1,0 +1,6 @@
+projects:
+  FormLib:
+    type: library
+    model: virion
+    path: ""
+...
