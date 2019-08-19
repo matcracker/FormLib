@@ -31,8 +31,8 @@ class Form extends BaseForm{
 	public const IMAGE_TYPE_PATH = 0;
 	public const IMAGE_TYPE_URL = 1;
 
-	public function __construct(Closure $onSubmit){
-		parent::__construct($onSubmit);
+	public function __construct(Closure $onSubmit, ?Closure $onClose = null){
+		parent::__construct($onSubmit, $onClose);
 		$this->setType(self::FORM_TYPE);
 		$this->setMessage("");
 	}

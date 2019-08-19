@@ -37,6 +37,8 @@ abstract class BaseForm implements Form{
 
 	/**@var Closure $onSubmit */
 	private $onSubmit;
+	/**@var Closure|null $onClose */
+	private $onClose;
 	/**@var array $data */
 	protected $data;
 
@@ -44,11 +46,15 @@ abstract class BaseForm implements Form{
 	 * BaseForm constructor.
 	 *
 	 * @param Closure $onSubmit Called when the form is submitted.
+	 * @param Closure $onClose Called when the form is closed.
 	 */
-	public function __construct(Closure $onSubmit){
+	public function __construct(Closure $onSubmit, ?Closure $onClose = null){
 		Utils::validateCallableSignature(function(Player $player, $data){
 		}, $onSubmit);
+		Utils::validateCallableSignature(function(Player $player){
+		}, $onClose);
 		$this->onSubmit = $onSubmit;
+		$this->onClose = $onClose;
 		$this->setTitle("");
 	}
 
@@ -59,7 +65,13 @@ abstract class BaseForm implements Form{
 	 * @internal
 	 */
 	public function handleResponse(Player $player, $data) : void{
-		($this->onSubmit)($player, $data);
+		if($this->data !== null){
+			($this->onSubmit)($player, $data);
+		}else{
+			if($this->onClose !== null){
+				($this->onClose)($player);
+			}
+		}
 	}
 
 	public final function jsonSerialize(){

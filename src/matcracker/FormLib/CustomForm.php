@@ -35,8 +35,8 @@ class CustomForm extends BaseForm{
 	public const STEP_SLIDER = "step_slider";
 	public const TOGGLE = "toggle";
 
-	public function __construct(Closure $onSubmit){
-		parent::__construct($onSubmit);
+	public function __construct(Closure $onSubmit, ?Closure $onClose = null){
+		parent::__construct($onSubmit, $onClose);
 		$this->setType(self::CUSTOM_FORM_TYPE);
 		$this->data["content"] = [];
 	}

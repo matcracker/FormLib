@@ -29,11 +29,11 @@ use InvalidArgumentException;
 
 class ModalForm extends BaseForm{
 
-	public function __construct(Closure $onSubmit){
-		parent::__construct($onSubmit);
+	public function __construct(Closure $onSubmit, ?Closure $onClose = null){
+		parent::__construct($onSubmit, $onClose);
 		$this->setType(self::MODAL_FORM_TYPE);
-		$this->setButton(1, "")
-			->setButton(2, "")
+		$this->setFirstButton("")
+			->setSecondButton("")
 			->setMessage("");
 	}
 
@@ -47,13 +47,37 @@ class ModalForm extends BaseForm{
 		return $this->data["content"];
 	}
 
+	public final function setFirstButton(string $text) : self{
+		return $this->setButton(1, $text);
+	}
+
+	public final function setSecondButton(string $text) : self{
+		return $this->setButton(2, $text);
+	}
+
+	/**
+	 * Returns the first button text.
+	 * @return string
+	 */
+	public final function getFirstButton() : string{
+		return $this->getButton(1);
+	}
+
+	/**
+	 * Returns the second button text.
+	 * @return string
+	 */
+	public final function getSecondButton() : string{
+		return $this->getButton(2);
+	}
+
 	/**
 	 * @param int    $button It must be 1 or 2
 	 * @param string $text The button text
 	 *
 	 * @return ModalForm
 	 */
-	public final function setButton(int $button, string $text) : self{
+	protected final function setButton(int $button, string $text) : self{
 		if($button < 1 || $button > 2){
 			throw new InvalidArgumentException("The button value must be 1 or 2.");
 		}
@@ -62,7 +86,7 @@ class ModalForm extends BaseForm{
 		return $this;
 	}
 
-	public final function getButton(int $button) : string{
+	protected final function getButton(int $button) : string{
 		if($button < 1 || $button > 2){
 			throw new InvalidArgumentException("The button value must be 1 or 2.");
 		}
