@@ -28,8 +28,8 @@ use Closure;
 
 class Form extends BaseForm{
 
-	public const IMAGE_TYPE_PATH = 0;
-	public const IMAGE_TYPE_URL = 1;
+	public const IMAGE_TYPE_PATH = "path";
+	public const IMAGE_TYPE_URL = "url";
 
 	public function __construct(Closure $onSubmit, ?Closure $onClose = null){
 		parent::__construct($onSubmit, $onClose);
@@ -54,10 +54,10 @@ class Form extends BaseForm{
 		return $this->data["content"];
 	}
 
-	protected final function addButton(string $text, ?int $imageType = null, string $imagePath = "") : self{
+	protected final function addButton(string $text, ?string $imageType = null, string $imagePath = "") : self{
 		$data["text"] = $text;
 		if($imageType !== null){
-			$data["image"]["type"] = $imageType === self::IMAGE_TYPE_PATH ? "path" : "url";
+			$data["image"]["type"] = $imageType;
 			$data["image"]["data"] = $imagePath;
 		}
 
