@@ -51,8 +51,10 @@ abstract class BaseForm implements Form{
 	public function __construct(Closure $onSubmit, ?Closure $onClose = null){
 		Utils::validateCallableSignature(function(Player $player, $data){
 		}, $onSubmit);
-		Utils::validateCallableSignature(function(Player $player){
-		}, $onClose);
+		if($onClose !== null){
+			Utils::validateCallableSignature(function(Player $player){
+			}, $onClose);
+		}
 		$this->onSubmit = $onSubmit;
 		$this->onClose = $onClose;
 		$this->setTitle("");
