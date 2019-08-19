@@ -67,7 +67,7 @@ abstract class BaseForm implements Form{
 	 * @internal
 	 */
 	public function handleResponse(Player $player, $data) : void{
-		if($this->data !== null){
+		if($data !== null){
 			($this->onSubmit)($player, $data);
 		}else{
 			if($this->onClose !== null){
