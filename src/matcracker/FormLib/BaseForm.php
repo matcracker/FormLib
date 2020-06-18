@@ -28,89 +28,100 @@ use Closure;
 use pocketmine\form\Form;
 use pocketmine\Player;
 use pocketmine\utils\Utils;
+use function count;
 
-abstract class BaseForm implements Form{
+abstract class BaseForm implements Form
+{
+    public const FORM_TYPE = "form";
+    public const MODAL_FORM_TYPE = "modal";
+    public const CUSTOM_FORM_TYPE = "custom_form";
+    /** @var mixed[] */
+    protected $data = [];
+    /** @var string[] */
+    protected $dataLabels = [];
+    /** @var Closure */
+    private $onSubmit;
+    /** @var Closure|null */
+    private $onClose;
 
-	public const FORM_TYPE = "form";
-	public const MODAL_FORM_TYPE = "modal";
-	public const CUSTOM_FORM_TYPE = "custom_form";
+    /**
+     * BaseForm constructor.
+     *
+     * @param Closure $onSubmit Called when the form is submitted.
+     * @param Closure $onClose Called when the form is closed.
+     */
+    public function __construct(Closure $onSubmit, ?Closure $onClose = null)
+    {
+        Utils::validateCallableSignature(function (Player $player, $data) {
+        }, $onSubmit);
+        if ($onClose !== null) {
+            Utils::validateCallableSignature(function (Player $player) {
+            }, $onClose);
+        }
+        $this->onSubmit = $onSubmit;
+        $this->onClose = $onClose;
+        $this->setTitle("");
+    }
 
-	/**@var Closure $onSubmit */
-	private $onSubmit;
-	/**@var Closure|null $onClose */
-	private $onClose;
-	/**@var array $data */
-	protected $data;
+    /**
+     * It sets the title form.
+     *
+     * @param string $title
+     * @return BaseForm
+     */
+    public final function setTitle(string $title): self
+    {
+        $this->data["title"] = $title;
 
-	/**
-	 * BaseForm constructor.
-	 *
-	 * @param Closure $onSubmit Called when the form is submitted.
-	 * @param Closure $onClose Called when the form is closed.
-	 */
-	public function __construct(Closure $onSubmit, ?Closure $onClose = null){
-		Utils::validateCallableSignature(function(Player $player, $data){
-		}, $onSubmit);
-		if($onClose !== null){
-			Utils::validateCallableSignature(function(Player $player){
-			}, $onClose);
-		}
-		$this->onSubmit = $onSubmit;
-		$this->onClose = $onClose;
-		$this->setTitle("");
-	}
+        return $this;
+    }
 
-	/**
-	 * @param Player $player
-	 * @param mixed  $data
-	 *
-	 * @internal
-	 */
-	public function handleResponse(Player $player, $data) : void{
-		if($data !== null){
-			($this->onSubmit)($player, $data);
-		}else{
-			if($this->onClose !== null){
-				($this->onClose)($player);
-			}
-		}
-	}
+    public function handleResponse(Player $player, $data): void
+    {
+        if ($data !== null) {
+            $this->processLabels($data);
 
-	public final function jsonSerialize(){
-		return $this->data;
-	}
+            ($this->onSubmit)($player, $data);
+        } else {
+            if ($this->onClose !== null) {
+                ($this->onClose)($player);
+            }
+        }
+    }
 
-	/**
-	 * It sets the title form.
-	 *
-	 * @param string $title
-	 *
-	 * @return BaseForm
-	 */
-	public final function setTitle(string $title) : self{
-		$this->data["title"] = $title;
+    protected abstract function processLabels(&$data): void;
 
-		return $this;
-	}
+    public final function jsonSerialize()
+    {
+        return $this->data;
+    }
 
-	public final function getTitle() : string{
-		return $this->data["title"];
-	}
+    public final function getTitle(): string
+    {
+        return $this->data["title"];
+    }
 
-	/**
-	 * Sets the form type. @param string $type
-	 *
-	 * @return BaseForm
-	 * @see BaseForm constants.
-	 *
-	 */
-	protected final function setType(string $type) : self{
-		$this->data["type"] = $type;
+    public final function getType(): string
+    {
+        return $this->data["type"];
+    }
 
-		return $this;
-	}
+    protected final function addDataLabel(?string $label): self
+    {
+        $this->dataLabels[] = $label ?? count($this->dataLabels);
+        return $this;
+    }
 
-	public final function getType() : string{
-		return $this->data["type"];
-	}
+    /**
+     * Sets the form type.
+     *
+     * @param string $type see BaseForm constants.
+     * @return BaseForm
+     */
+    protected final function setType(string $type): self
+    {
+        $this->data["type"] = $type;
+
+        return $this;
+    }
 }
