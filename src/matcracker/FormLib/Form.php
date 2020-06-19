@@ -38,6 +38,7 @@ class Form extends BaseForm
         parent::__construct($onSubmit, $onClose);
         $this->setType(self::FORM_TYPE);
         $this->setMessage("");
+        $this->data["buttons"] = [];
     }
 
     /**
