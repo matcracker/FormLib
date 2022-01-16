@@ -26,7 +26,7 @@ namespace matcracker\FormLib;
 
 use Closure;
 use pocketmine\form\Form;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\Utils;
 use function count;
 
@@ -35,22 +35,18 @@ abstract class BaseForm implements Form
     public const FORM_TYPE = "form";
     public const MODAL_FORM_TYPE = "modal";
     public const CUSTOM_FORM_TYPE = "custom_form";
-    /** @var mixed[] */
-    protected $data = [];
-    /** @var string[] */
-    protected $dataLabels = [];
-    /** @var Closure */
-    private $onSubmit;
-    /** @var Closure|null */
-    private $onClose;
 
-    /**
-     * BaseForm constructor.
-     *
-     * @param Closure $onSubmit Called when the form is submitted.
-     * @param Closure $onClose Called when the form is closed.
-     */
-    public function __construct(Closure $onSubmit, ?Closure $onClose = null)
+    protected array $data = [];
+    /** @var string[] */
+    protected array $dataLabels = [];
+
+	/**
+	 * BaseForm constructor.
+	 *
+	 * @param Closure      $onSubmit Called when the form is submitted.
+	 * @param Closure|null $onClose Called when the form is closed.
+	 */
+    public function __construct(private Closure $onSubmit, private ?Closure $onClose = null)
     {
         Utils::validateCallableSignature(function (Player $player, $data) {
         }, $onSubmit);
@@ -58,8 +54,6 @@ abstract class BaseForm implements Form
             Utils::validateCallableSignature(function (Player $player) {
             }, $onClose);
         }
-        $this->onSubmit = $onSubmit;
-        $this->onClose = $onClose;
         $this->setTitle("");
     }
 
@@ -89,7 +83,7 @@ abstract class BaseForm implements Form
         }
     }
 
-    protected abstract function processLabels(&$data): void;
+    protected abstract function processLabels(mixed &$data): void;
 
     public final function jsonSerialize()
     {

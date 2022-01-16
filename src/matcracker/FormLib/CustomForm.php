@@ -121,7 +121,7 @@ class CustomForm extends BaseForm
         );
     }
 
-    protected function processLabels(&$data): void
+    protected function processLabels(mixed &$data): void
     {
         if (is_array($data)) {
             $tmpDataLbl = [];

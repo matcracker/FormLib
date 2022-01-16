@@ -110,7 +110,7 @@ class Form extends BaseForm
         return $this->addButton($text, self::IMAGE_TYPE_PATH, $imagePath, $label);
     }
 
-    protected function processLabels(&$data): void
+    protected function processLabels(mixed &$data): void
     {
         if (is_int($data) && isset($this->dataLabels[$data])) {
             $data = $this->dataLabels[$data];

@@ -104,7 +104,7 @@ class ModalForm extends BaseForm
         return $this->getButton(2);
     }
 
-    protected function processLabels(&$data): void
+    protected function processLabels(mixed &$data): void
     {
     }
 }
