@@ -85,7 +85,7 @@ abstract class BaseForm implements Form
 
     protected abstract function processLabels(mixed &$data): void;
 
-    public final function jsonSerialize()
+    public final function jsonSerialize() : array
     {
         return $this->data;
     }
